@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 // !! REPLACE THIS WITH YOUR ACTUAL N8N WEBHOOK URL !!
-const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook/404757f2-ee41-43bd-8692-d7051889f1f8'; 
+const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook-test/404757f2-ee41-43bd-8692-d7051889f1f8'; 
 // ---------------------
 
 const chatWindow = document.getElementById('chat-window');
@@ -156,3 +156,4 @@ userInput.addEventListener('input', () => {
     // Enable button only if the input has non-whitespace characters
     sendBtn.disabled = userInput.value.trim() === '';
 });
+
