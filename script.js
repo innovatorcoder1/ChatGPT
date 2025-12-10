@@ -86,23 +86,37 @@ async function sendMessage() {
         });
 
         if (!response.ok) {
+            // Handle HTTP error statuses (4xx, 5xx)
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
+        // --- NEW/MODIFIED SECTION FOR ERROR HANDLING ---
+        let data;
+        let aiResponse;
         
-        // n8n should return an object like { answer: "The AI's response here" }
-        const aiResponse = data.answer || "Sorry, I received an empty or unexpected response from the AI.";
+        try {
+            data = await response.json();
+            
+            // Check for the expected key 'answer'
+            aiResponse = data.answer || "❌ n8n Error: Data found but key 'answer' is missing or empty. Check your n8n 'Set' node.";
+
+        } catch (jsonError) {
+            // Handle 'Unexpected end of JSON input' error
+            const rawText = await response.text();
+            aiResponse = `⚠️ JSON Parse Error: n8n returned non-JSON data. Raw response starts with: "${rawText.substring(0, 100)}..."`;
+            console.error('JSON Parsing Failed:', jsonError, 'Raw Text:', rawText);
+        }
+        // --- END OF NEW/MODIFIED SECTION ---
 
         // 3.5. Hide indicator and display AI response
         hideTypingIndicator();
         chatWindow.appendChild(createMessageElement(aiResponse, 'ai'));
 
     } catch (error) {
-        // 3.6. Handle errors
+        // 3.6. Handle general fetch errors (Failed to fetch) or HTTP errors
         console.error('Error sending message:', error);
         hideTypingIndicator();
-        chatWindow.appendChild(createMessageElement(`ERROR: Failed to connect to AI agent. Details: ${error.message}`, 'ai'));
+        chatWindow.appendChild(createMessageElement(`🛑 FETCH/HTTP ERROR: Failed to communicate with n8n. Details: ${error.message}. Check the webhook URL and n8n status.`, 'ai'));
     }
 
     // 3.7. Scroll to bottom after response
@@ -126,9 +140,4 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     // Enable button only if the input has non-whitespace characters
     sendBtn.disabled = userInput.value.trim() === '';
-
 });
-
-
-
-
