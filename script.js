@@ -19,7 +19,9 @@ function createMessageElement(text, sender) {
 
     const content = document.createElement('div');
     content.classList.add('message-content');
-    content.textContent = text;
+    // Use innerHTML to allow for basic formatting (like line breaks) if needed, 
+    // but we escape it by using textContent for safety first
+    content.textContent = text; 
 
     messageDiv.appendChild(icon);
     messageDiv.appendChild(content);
@@ -90,24 +92,37 @@ async function sendMessage() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // --- NEW/MODIFIED SECTION FOR ERROR HANDLING ---
-        let data;
+        // =======================================================
+        // ========== CRITICAL RESPONSE HANDLING CHANGES ==========
+        // =======================================================
         let aiResponse;
         
-        try {
-            data = await response.json();
-            
-            // Check for the expected key 'answer'
-            aiResponse = data.answer || "❌ n8n Error: Data found but key 'answer' is missing or empty. Check your n8n 'Set' node.";
+        // 1. Check if the response body is empty (which causes the JSON error)
+        const contentLength = response.headers.get('content-length');
+        const isBodyEmpty = contentLength === '0' || contentLength === null;
 
-        } catch (jsonError) {
-            // Handle 'Unexpected end of JSON input' error
-            const rawText = await response.text();
-            aiResponse = `⚠️ JSON Parse Error: n8n returned non-JSON data. Raw response starts with: "${rawText.substring(0, 100)}..."`;
-            console.error('JSON Parsing Failed:', jsonError, 'Raw Text:', rawText);
+        if (isBodyEmpty) {
+             aiResponse = "⚠️ n8n Setup Error: Webhook sent an empty response body (200 OK). You must configure the final 'HTTP Response' node in n8n to return JSON data.";
+        } else {
+            // 2. Attempt to parse JSON
+            try {
+                const data = await response.json();
+                
+                // 3. Check for the expected key 'answer'
+                // This resolves the "Sorry, I received an empty or unexpected response from the AI." error
+                aiResponse = data.answer 
+                            ? data.answer 
+                            : "❌ n8n Data Error: Response received but key 'answer' is missing. Check your n8n 'Set' node's output.";
+
+            } catch (jsonError) {
+                // 4. Handle 'Unexpected end of JSON input' or general JSON parsing failure
+                const rawText = await response.text();
+                aiResponse = `❌ JSON Parse Error: Expected JSON, but received raw data starting with: "${rawText.substring(0, 100)}..."`;
+                console.error('JSON Parsing Failed:', jsonError, 'Raw Text:', rawText);
+            }
         }
-        // --- END OF NEW/MODIFIED SECTION ---
-
+        // =======================================================
+        
         // 3.5. Hide indicator and display AI response
         hideTypingIndicator();
         chatWindow.appendChild(createMessageElement(aiResponse, 'ai'));
@@ -116,7 +131,7 @@ async function sendMessage() {
         // 3.6. Handle general fetch errors (Failed to fetch) or HTTP errors
         console.error('Error sending message:', error);
         hideTypingIndicator();
-        chatWindow.appendChild(createMessageElement(`🛑 FETCH/HTTP ERROR: Failed to communicate with n8n. Details: ${error.message}. Check the webhook URL and n8n status.`, 'ai'));
+        chatWindow.appendChild(createMessageElement(`🛑 NETWORK/HTTP ERROR: Failed to communicate with n8n. Details: ${error.message}. Check the webhook URL and n8n status.`, 'ai'));
     }
 
     // 3.7. Scroll to bottom after response
