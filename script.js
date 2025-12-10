@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 // !! REPLACE THIS WITH YOUR ACTUAL N8N WEBHOOK URL !!
-const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook/404757f2-ee41-43bd-8692-d7051889f1f8'; 
+const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook/5ed2996d-5575-4fc1-8cf7-67e173b5c2db/chat'; 
 // ---------------------
 
 const chatWindow = document.getElementById('chat-window');
@@ -128,5 +128,6 @@ userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 
 });
+
 
 
