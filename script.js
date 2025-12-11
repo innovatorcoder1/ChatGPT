@@ -140,3 +140,4 @@ userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
 
+
