@@ -106,6 +106,7 @@ async function sendMessage() {
             aiResponse =
                 answer.answer ||      // Expected structure
                 answer.data?.answer ||     // Fallback if not_found
+                answer.message ||
                 "❌ Missing 'answer' field in n8n response.";
         }
 
@@ -138,4 +139,5 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
+
 
