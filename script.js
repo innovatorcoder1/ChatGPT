@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook/registrationform';
+const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook-test/registrationform';
 // ---------------------
 
 const chatWindow = document.getElementById('chat-window');
@@ -102,13 +102,13 @@ async function sendMessage() {
             //data = null;
         }
 
-        // if (answer) {
-        //     // Support BOTH formats: { answer } and { data: { answer } }
-        //     aiResponse =
-        //         data.answer ||
-        //         data.data?.answer ||
-        //         "❌ Missing 'answer' field in n8n response.";
-        // }
+        if (answer) {
+            // Support BOTH formats: { answer } and { data: { answer } }
+            aiResponse =
+                data.answer ||
+                data.data?.answer ||
+                "❌ Missing 'answer' field in n8n response.";
+        }
 
     } catch (error) {
         aiResponse = `🛑 NETWORK ERROR: ${error.message}`;
@@ -139,6 +139,7 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
+
 
 
 
