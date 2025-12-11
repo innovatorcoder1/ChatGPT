@@ -103,6 +103,8 @@ async function sendMessage() {
 
         // Extract response safely
         if (answer) {
+            // If answer is an array, take the first item
+            const item = Array.isArray(answer) ? answer[0] : answer;
             aiResponse =
                 answer.answer ||      // Expected structure
                 answer.data?.answer ||     // Fallback if not_found
@@ -139,5 +141,6 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
+
 
 
