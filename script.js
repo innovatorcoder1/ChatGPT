@@ -106,9 +106,9 @@ async function sendMessage() {
             // If answer is an array, take the first item
             const item = Array.isArray(answer) ? answer[0] : answer;
             aiResponse =
-                answer.answer ||      // Expected structure
-                answer.data?.answer ||     // Fallback if not_found
-                answer.message ||
+                item.answer ||           // Expected field
+                item.data?.answer ||     // Fallback if nested
+                item.message ||          // Another fallback
                 "❌ Missing 'answer' field in n8n response.";
         }
 
@@ -141,6 +141,7 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
+
 
 
 
