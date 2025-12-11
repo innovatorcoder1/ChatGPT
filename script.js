@@ -92,22 +92,21 @@ async function sendMessage() {
             throw new Error(`HTTP Error: ${response.status}`);
         }
 
-        // Try to parse JSON response
+        // Parse JSON
         let answer;
         try {
             answer = await response.json();
         } catch (jsonErr) {
             const raw = await response.text();
-            aiResponse = `❌ Invalid JSON returned by n8n: ${raw}`;
-            //data = null;
+            aiResponse = `❌ Invalid JSON returned by backend: ${raw}`;
         }
 
+        // Extract response safely
         if (answer) {
-            // Support BOTH formats: { answer } and { data: { answer } }
             aiResponse =
-                data.answer ||
-                data.data?.answer ||
-                "❌ Missing 'answer' field in n8n response.";
+                answer.answer ||      // Expected structure
+                answer.message ||     // Fallback if not_found
+                JSON.stringify(answer); // Fallback view
         }
 
     } catch (error) {
@@ -139,11 +138,3 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
-
-
-
-
-
-
-
-
