@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook/registrationform';
+const N8N_WEBHOOK_URL = 'https://codewarcollege.app.n8n.cloud/webhook-test/registrationform';
 // ---------------------
 
 const chatWindow = document.getElementById('chat-window');
@@ -141,6 +141,7 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
+
 
 
 
