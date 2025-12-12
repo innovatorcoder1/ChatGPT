@@ -112,34 +112,7 @@ body {
 .message-content {
     max-width: calc(100% - 45px); /* Icon width + gap */
     line-height: 1.6;
-    /*white-space: pre-wrap;*/ /* Preserve new lines */
-}
-/* Fix Markdown rendering inside chat messages */
-.message-content h1,
-.message-content h2,
-.message-content h3,
-.message-content h4,
-.message-content h5,
-.message-content h6 {
-    font-weight: bold;
-    margin: 5px 0;
-    color: #222;
-}
-
-/* Lists inside AI responses */
-.message-content ul {
-    margin: 10px 0;
-    padding-left: 20px;
-}
-
-.message-content li {
-    margin: 4px 0;
-}
-
-/* Allow normal HTML rendering */
-.message-content {
-    white-space: normal; /* <-- Change THIS */
-    line-height: 1.6;
+    white-space: pre-wrap; /* Preserve new lines */
 }
 
 
@@ -243,3 +216,4 @@ body {
     40% { opacity: 1; }
 
 }
+
