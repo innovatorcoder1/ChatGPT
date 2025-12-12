@@ -18,7 +18,7 @@ function createMessageElement(text, sender) {
 
     const content = document.createElement('div');
     content.classList.add('message-content');
-    content.textContent = text;
+    content.innerHTML = marked.parse(text);
 
     messageDiv.appendChild(icon);
     messageDiv.appendChild(content);
@@ -141,6 +141,7 @@ userInput.addEventListener('keypress', (e) => {
 userInput.addEventListener('input', () => {
     sendBtn.disabled = userInput.value.trim() === '';
 });
+
 
 
 
